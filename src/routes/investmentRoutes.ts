@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { getAllInvestments, createInvestment, deleteInvestment } from '../controllers/investmentController';
+import {
+  getAllInvestments,
+  createInvestment,
+  deleteInvestment,
+} from '../controllers/investmentController';
 import { requireAuth } from '../middleware/auth';
 
 const router = Router();

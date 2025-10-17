@@ -1,22 +1,27 @@
+// dotenv must be imported and configured first
+/* eslint-disable import/order */
 import dotenv from 'dotenv';
 dotenv.config();
+/* eslint-enable import/order */
 
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
 import passport from './config/passport';
 import authRoutes from './routes/authRoutes';
-import investmentRoutes from './routes/investmentRoutes';
 import goalRoutes from './routes/goalRoutes';
+import investmentRoutes from './routes/investmentRoutes';
 
 const app = express();
 const PORT = 3001;
 
 // Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(
   session({

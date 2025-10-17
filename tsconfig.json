@@ -6,12 +6,17 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noEmit": false
   },
   "include": ["src/**/*"],
+  "files": ["src/types/express.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

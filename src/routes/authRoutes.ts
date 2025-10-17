@@ -4,9 +4,12 @@ import { getUser, logout } from '../controllers/authController';
 
 const router = Router();
 
-router.get('/google', passport.authenticate('google', {
-  scope: ['profile', 'email']
-}));
+router.get(
+  '/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+  })
+);
 
 router.get(
   '/google/callback',

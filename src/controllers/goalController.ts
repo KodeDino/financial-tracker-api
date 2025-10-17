@@ -1,26 +1,27 @@
-import { Request, Response } from "express";
-import db from "../config/database";
-import { randomUUID } from "crypto";
+import { randomUUID } from 'crypto';
+import { Request, Response } from 'express';
+import db from '../config/database';
+import { Goal } from '../types/models';
 
 export const getAllGoals = (req: Request, res: Response) => {
-  const userId = (req.user as any)?.id
+  const userId = req.user?.id;
   const status = req.query.status as string;
 
-  if(!userId) {
-    res.status(401).json({ error: 'Not authenticated' })
-    return; 
+  if (!userId) {
+    res.status(401).json({ error: 'Not authenticated' });
+    return;
   }
 
-  let query = "SELECT * FROM goals WHERE user_id = ?";
-  let params = [userId];
+  let query = 'SELECT * FROM goals WHERE user_id = ?';
+  const params = [userId];
 
-  if(status) {
-    if(!['active', 'completed', 'cancelled'].includes(status)) {
-      res.status(400).json({ error: 'Invalid status. Must be active, completed, or cancelled' })
+  if (status) {
+    if (!['active', 'completed', 'cancelled'].includes(status)) {
+      res.status(400).json({ error: 'Invalid status. Must be active, completed, or cancelled' });
       return;
     }
-    query += " AND status = ?";
-    params.push(status)
+    query += ' AND status = ?';
+    params.push(status);
   }
 
   query += ' ORDER BY created_at DESC';
@@ -31,12 +32,12 @@ export const getAllGoals = (req: Request, res: Response) => {
       return;
     }
     res.json(rows);
-  })
-}
+  });
+};
 
 export const createGoal = (req: Request, res: Response) => {
-  const userId = (req.user as any)?.id;
-  const { target_amount } = req.body
+  const userId = req.user?.id;
+  const { target_amount } = req.body;
 
   if (!userId) {
     res.status(401).json({ error: 'Not authenticated' });
@@ -49,42 +50,47 @@ export const createGoal = (req: Request, res: Response) => {
   }
 
   // Check to see if an active goal exists
-  db.get('SELECT id from goals WHERE user_id = ? AND status = ?', [userId, 'active'], (error, row) => {
-    if (error) {
-      res.status(500).json({ error: error.message });
-      return;
-    }
-
-    if (row) {
-      res.status(400).json({ error: 'User already has an active goal' });
-      return;
-    }
-
-    // create a row for a new goal if no active goal found
-    const id = randomUUID();
-    db.run(`INSERT INTO goals (id, user_id, target_amount, status) VALUES (?, ?, ?, ?)`,
-    [id, userId, target_amount, 'active'],
-    (err) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
+  db.get(
+    'SELECT id from goals WHERE user_id = ? AND status = ?',
+    [userId, 'active'],
+    (error, row) => {
+      if (error) {
+        res.status(500).json({ error: error.message });
         return;
       }
 
-      // fetch the created goal after creation succeed
-      db.get('SELECT * FROM goals where id = ?', [id], (error, goal) => {
-        if (error) {
-          res.status(500).json({ error: error.message });
-          return;
+      if (row) {
+        res.status(400).json({ error: 'User already has an active goal' });
+        return;
+      }
+
+      // create a row for a new goal if no active goal found
+      const id = randomUUID();
+      db.run(
+        `INSERT INTO goals (id, user_id, target_amount, status) VALUES (?, ?, ?, ?)`,
+        [id, userId, target_amount, 'active'],
+        (err) => {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+
+          // fetch the created goal after creation succeed
+          db.get('SELECT * FROM goals where id = ?', [id], (error, goal) => {
+            if (error) {
+              res.status(500).json({ error: error.message });
+              return;
+            }
+            res.status(201).json(goal);
+          });
         }
-        res.status(201).json(goal)
-      })
+      );
     }
-  )
-  })
-}
+  );
+};
 
 export const updateGoal = (req: Request, res: Response) => {
-  const userId = (req.user as any)?.id;
+  const userId = req.user?.id;
   const id = req.params.id;
   const status = req.body.status as string;
 
@@ -99,20 +105,20 @@ export const updateGoal = (req: Request, res: Response) => {
   }
 
   // First, check if goal exists and belongs to user
-  db.get('SELECT * FROM goals WHERE id = ? AND user_id = ?', [id, userId], (error, goal: any) => {
+  db.get('SELECT * FROM goals WHERE id = ? AND user_id = ?', [id, userId], (error, goal: Goal) => {
     if (error) {
       res.status(500).json({ error: error.message });
       return;
     }
 
     if (!goal) {
-      res.status(404).json({ error: 'Goal not found'});
+      res.status(404).json({ error: 'Goal not found' });
       return;
     }
 
     // Optional: Check if goal is already in that status
     if (goal.status === status) {
-      res.status(400).json({ error: `Goal is already ${status}`});
+      res.status(400).json({ error: `Goal is already ${status}` });
       return;
     }
 
@@ -121,11 +127,12 @@ export const updateGoal = (req: Request, res: Response) => {
     const completedAt = status === 'completed' ? new Date().toISOString() : null;
 
     // Update the goal
-    db.run('UPDATE goals SET status = ?, completed_at = ? WHERE id = ? AND user_id = ?',
+    db.run(
+      'UPDATE goals SET status = ?, completed_at = ? WHERE id = ? AND user_id = ?',
       [status, completedAt, id, userId],
-      function(error) {
+      function (error) {
         if (error) {
-          res.status(500).json({error: error.message});
+          res.status(500).json({ error: error.message });
           return;
         }
 
@@ -140,4 +147,4 @@ export const updateGoal = (req: Request, res: Response) => {
       }
     );
   });
-}
+};

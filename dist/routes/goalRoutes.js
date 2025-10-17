@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const goalController_1 = require("../controllers/goalController");
+const auth_1 = require("../middleware/auth");
+const router = (0, express_1.Router)();
+router.get('/', auth_1.requireAuth, goalController_1.getAllGoals);
+router.post('/', auth_1.requireAuth, goalController_1.createGoal);
+router.patch('/:id', auth_1.requireAuth, goalController_1.updateGoal);
+exports.default = router;
