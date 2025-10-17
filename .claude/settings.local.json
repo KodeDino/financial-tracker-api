@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//u/Personal-Projects/Web Applications/financial-tracker/src/utils/**)",
+      "Read(//u/Personal-Projects/Web Applications/financial-tracker/src/components/MaturityDetails/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
