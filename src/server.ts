@@ -7,6 +7,7 @@ import session from 'express-session';
 import passport from './config/passport';
 import authRoutes from './routes/authRoutes';
 import investmentRoutes from './routes/investmentRoutes';
+import goalRoutes from './routes/goalRoutes';
 
 const app = express();
 const PORT = 3001;
@@ -32,6 +33,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/auth', authRoutes);
 app.use('/api/investments', investmentRoutes);
+app.use('/api/goals', goalRoutes);
 
 // Start server
 app.listen(PORT, () => {
