@@ -5,7 +5,7 @@ import { Goal } from '../types/models';
 
 export const getAllGoals = (req: Request, res: Response) => {
   const userId = req.user?.id;
-  const status = req.query.status as string;
+  const statusParam = req.query.status as string;
 
   if (!userId) {
     res.status(401).json({ error: 'Not authenticated' });
@@ -13,15 +13,27 @@ export const getAllGoals = (req: Request, res: Response) => {
   }
 
   let query = 'SELECT * FROM goals WHERE user_id = ?';
-  const params = [userId];
+  const params: (string | number)[] = [userId];
 
-  if (status) {
-    if (!['active', 'completed', 'cancelled'].includes(status)) {
-      res.status(400).json({ error: 'Invalid status. Must be active, completed, or cancelled' });
+  if (statusParam) {
+    // Split comma-separated statuses
+    const statuses = statusParam.split(',').map((s) => s.trim());
+
+    // Validate all statuses
+    const validStatuses = ['active', 'completed', 'cancelled'];
+    const invalidStatuses = statuses.filter((s) => !validStatuses.includes(s));
+
+    if (invalidStatuses.length > 0) {
+      res.status(400).json({
+        error: `Invalid status values: ${invalidStatuses.join(', ')}. Must be active, completed, or cancelled`,
+      });
       return;
     }
-    query += ' AND status = ?';
-    params.push(status);
+
+    // Build IN clause for multiple statuses
+    const placeholders = statuses.map(() => '?').join(', ');
+    query += ` AND status IN (${placeholders})`;
+    params.push(...statuses);
   }
 
   query += ' ORDER BY created_at DESC';
