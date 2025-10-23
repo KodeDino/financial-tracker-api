@@ -11,7 +11,8 @@ db.serialize(() => {
     date TEXT NOT NULL,
     type TEXT NOT NULL CHECK(type IN ('cd', 'tBill')),
     amount REAL NOT NULL,
-    rate REAL NOT NULL,
+    rate REAL,
+    actual_cost REAL,
     FOREIGN KEY (user_id) REFERENCES users(id)
   )`);
 

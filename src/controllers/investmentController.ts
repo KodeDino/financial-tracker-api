@@ -20,11 +20,11 @@ export const getAllInvestments = (req: Request, res: Response) => {
 
 export const createInvestment = (req: Request, res: Response) => {
   const userId = req.user?.id;
-  const { date, type, amount, rate } = req.body;
+  const { date, type, amount, rate, actual_cost } = req.body;
 
   // Validate required fields
-  if (!date || !type || amount === undefined || rate === undefined) {
-    res.status(400).json({ error: 'Missing required fields: date, type, amount, rate' });
+  if (!date || !type || amount === undefined) {
+    res.status(400).json({ error: 'Missing required fields: date, type, amount' });
     return;
   }
 
@@ -34,11 +34,22 @@ export const createInvestment = (req: Request, res: Response) => {
     return;
   }
 
+  // Validate type-specific fields
+  if (type === 'cd' && rate === undefined) {
+    res.status(400).json({ error: 'Rate is required for CD investments' });
+    return;
+  }
+
+  if (type === 'tBill' && actual_cost === undefined) {
+    res.status(400).json({ error: 'Face value is required for T-Bill investments' });
+    return;
+  }
+
   // Insert into database
   const id = randomUUID();
   db.run(
-    'INSERT INTO investments (id, user_id, date, type, amount, rate) VALUES (?, ?, ?, ?, ?, ?)',
-    [id, userId, date, type, amount, rate],
+    'INSERT INTO investments (id, user_id, date, type, amount, rate, actual_cost) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [id, userId, date, type, amount, rate || null, actual_cost || null],
     function (err) {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -49,6 +60,7 @@ export const createInvestment = (req: Request, res: Response) => {
         user_id: userId,
         date,
         type,
+        actual_cost,
         amount,
         rate,
       });
