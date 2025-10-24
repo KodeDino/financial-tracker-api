@@ -1,7 +1,7 @@
 import path from 'path';
 import sqlite3 from 'sqlite3';
 
-const dbPath = path.join(__dirname, '../../financial_tracker.db');
+const dbPath = process.env.DB_PATH || path.join(__dirname, '../../financial_tracker.db');
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {

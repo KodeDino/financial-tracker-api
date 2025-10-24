@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Read(//u/Personal-Projects/Web Applications/financial-tracker/src/utils/**)",
-      "Read(//u/Personal-Projects/Web Applications/financial-tracker/src/components/MaturityDetails/**)"
+      "Read(//u/Personal-Projects/Web Applications/financial-tracker/src/components/MaturityDetails/**)",
+      "Read(//c/Users/yoche/OneDrive/Desktop/**)"
     ],
     "deny": [],
     "ask": []

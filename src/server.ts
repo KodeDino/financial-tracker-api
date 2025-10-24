@@ -13,7 +13,7 @@ import goalRoutes from './routes/goalRoutes';
 import investmentRoutes from './routes/investmentRoutes';
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(
