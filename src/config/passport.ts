@@ -9,6 +9,7 @@ console.log('Environment variables check:');
 console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'SET' : 'MISSING');
 console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING');
 console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('CLIENT_ID:', process.env.CLIENT_ID);
 
 passport.use(
   new GoogleStrategy(
