@@ -1,10 +1,7 @@
 // dotenv must be imported and configured first
 /* eslint-disable import/order */
 import dotenv from 'dotenv';
-// Only use dotenv in development - Railway injects env vars directly in production
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+dotenv.config();
 /* eslint-enable import/order */
 
 import express from 'express';
