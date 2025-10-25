@@ -1,5 +1,135 @@
 # Financial Tracker Backend - Development Progress
 
+## Session Date: 2025-10-24
+
+### ✅ Completed Today
+
+1. **Successfully Deployed Backend to Railway**
+   - Created new Railway project linked to GitHub repository
+   - Configured environment variables in Railway dashboard
+   - Generated public domain: `https://financial-tracker-api-production.up.railway.app`
+   - Verified deployment with successful API endpoint testing
+
+2. **Fixed Environment Variable Injection Issues**
+   - Discovered Railway's "Redeploy" uses old configuration (doesn't pick up new env vars)
+   - Solution: Use "Deploy" button with "apply destructive changes" to apply new environment variables
+   - Confirmed all environment variables properly injected:
+     - `GOOGLE_CLIENT_ID`: SET ✅
+     - `GOOGLE_CLIENT_SECRET`: SET ✅
+     - `SESSION_SECRET`: SET ✅
+     - `NODE_ENV`: production ✅
+     - Railway auto-sets `PORT=8080` ✅
+
+3. **Configured Railway Public Networking**
+   - Set custom port to 8080 (matches Express app port)
+   - Railway routes HTTPS (443) → container port 8080
+   - Domain successfully accessible at `https://financial-tracker-api-production.up.railway.app`
+
+4. **Updated Google OAuth Configuration**
+   - Added Railway callback URL to Google Cloud Console authorized redirect URIs:
+     - `https://financial-tracker-api-production.up.railway.app/api/auth/google/callback`
+   - Kept localhost callback for local development
+
+### 🎯 Deployment Status: **LIVE**
+
+Backend is successfully deployed and functional:
+- ✅ All environment variables properly loaded
+- ✅ API endpoints responding correctly (401 Unauthorized for protected routes)
+- ✅ Google OAuth configured for production
+- ✅ Public domain generated and accessible
+- ⚠️ MemoryStore warning for sessions (acceptable for now, can upgrade to SQLite session store later)
+
+### 🔑 Key Learnings (Session 2025-10-24)
+
+1. **Railway "Redeploy" vs "Deploy" button**
+   - **"Redeploy"** = Rebuilds with exact same configuration (OLD env vars)
+   - **"Deploy"** = New deployment with current configuration (NEW env vars)
+   - After changing environment variables, MUST use "Deploy" (not "Redeploy")
+   - "Apply destructive changes" warning is EXPECTED when env vars change
+
+2. **Railway Environment Variables**
+   - Remove quotes from values in Railway dashboard (Railway handles them automatically)
+   - Variables only take effect after fresh deployment (not redeploy)
+   - Railway automatically sets `PORT` environment variable (let Railway control it)
+
+3. **Dotenv in Production**
+   - Railway injects env vars directly into the Node.js process
+   - No need for `.env` file in production (file won't exist in container anyway)
+   - Can safely call `dotenv.config()` - it will find 0 variables and Railway's env vars take precedence
+
+4. **Railway Public Networking**
+   - Must configure port number that matches Express app
+   - Railway auto-detects running port but manual confirmation is safest
+   - Domain generation is immediate and works instantly
+
+5. **Session Store Warning**
+   - Default `MemoryStore` is not production-ready (memory leaks, doesn't scale)
+   - Acceptable for MVP/testing deployment
+   - Can upgrade to `connect-sqlite3` or Redis later for production-grade sessions
+
+### 📝 Environment Variables (Railway Production)
+
+Required environment variables in Railway dashboard:
+```
+GOOGLE_CLIENT_ID=<your-google-client-id>
+GOOGLE_CLIENT_SECRET=<your-google-client-secret>
+SESSION_SECRET=<random-secret-key>
+NODE_ENV=production
+FRONTEND_URL=<frontend-deployment-url>
+```
+
+**Notes:**
+- Do NOT include `PORT` - Railway sets this automatically
+- Remove quotes from all values in Railway dashboard
+- `FRONTEND_URL` must be updated when frontend is deployed
+
+### 📝 Deployment Checklist
+
+**Before Deploying:**
+1. ✅ Push latest code to GitHub
+2. ✅ Build succeeds locally (`yarn build`)
+3. ✅ `.env` file in `.gitignore`
+4. ✅ No sensitive data committed to git
+
+**Railway Setup:**
+1. ✅ Create new Railway project
+2. ✅ Link to GitHub repository
+3. ✅ Add all environment variables (without quotes)
+4. ✅ Click "Deploy" (NOT "Redeploy")
+5. ✅ Confirm "apply destructive changes"
+
+**Post-Deployment:**
+1. ✅ Generate public domain in Settings → Networking
+2. ✅ Set port to 8080
+3. ✅ Test API endpoints
+4. ✅ Update Google OAuth redirect URIs in Google Cloud Console
+5. ⏳ Update `FRONTEND_URL` when frontend is deployed (pending)
+
+### 🌐 Production URLs
+
+- **Backend API**: `https://financial-tracker-api-production.up.railway.app`
+- **OAuth Callback**: `https://financial-tracker-api-production.up.railway.app/api/auth/google/callback`
+- **Frontend**: TBD (pending deployment)
+
+### 📋 Next Steps
+
+1. **Deploy Frontend**
+   - Deploy React frontend (Vercel/Netlify/Railway)
+   - Update Railway `FRONTEND_URL` environment variable
+   - Click "Deploy" to apply changes
+
+2. **Optional: Upgrade Session Store**
+   - Install `connect-sqlite3`
+   - Configure session storage in SQLite database
+   - Eliminates MemoryStore warning
+
+3. **Testing**
+   - Test full OAuth flow with deployed frontend + backend
+   - Verify CORS settings work correctly
+   - Test all API endpoints end-to-end
+
+---
+
 ## Session Date: 2025-10-16
 
 ### ✅ Completed Today

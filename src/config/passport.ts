@@ -4,15 +4,6 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import db from './database';
 import { User } from '../types/models';
 
-// Debug: Check environment variables
-console.log('Environment variables check:');
-console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'SET' : 'MISSING');
-console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING');
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('DB_PATH:', process.env.DB_PATH || 'Using default path');
-console.log('SESSION_SECRET:', process.env.SESSION_SECRET ? 'SET' : 'MISSING');
-console.log('CLIENT_ID:', process.env.CLIENT_ID);
-
 passport.use(
   new GoogleStrategy(
     {
