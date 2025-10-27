@@ -15,6 +15,11 @@ import investmentRoutes from './routes/investmentRoutes';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy - required for secure cookies to work behind Railway's reverse proxy
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // Middleware
 app.use(
   cors({
