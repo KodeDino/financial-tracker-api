@@ -30,9 +30,15 @@
      - `https://financial-tracker-api-production.up.railway.app/api/auth/google/callback`
    - Kept localhost callback for local development
 
+5. **Created volume for the project and added DB_PATH**
+   - Created a volume under this project
+   - Added DB_PATH env variables with value /data/financial_tracker.db
+   - Redeployed with the volume
+
 ### 🎯 Deployment Status: **LIVE**
 
 Backend is successfully deployed and functional:
+
 - ✅ All environment variables properly loaded
 - ✅ API endpoints responding correctly (401 Unauthorized for protected routes)
 - ✅ Google OAuth configured for production
@@ -70,6 +76,7 @@ Backend is successfully deployed and functional:
 ### 📝 Environment Variables (Railway Production)
 
 Required environment variables in Railway dashboard:
+
 ```
 GOOGLE_CLIENT_ID=<your-google-client-id>
 GOOGLE_CLIENT_SECRET=<your-google-client-secret>
@@ -79,6 +86,7 @@ FRONTEND_URL=<frontend-deployment-url>
 ```
 
 **Notes:**
+
 - Do NOT include `PORT` - Railway sets this automatically
 - Remove quotes from all values in Railway dashboard
 - `FRONTEND_URL` must be updated when frontend is deployed
@@ -86,12 +94,14 @@ FRONTEND_URL=<frontend-deployment-url>
 ### 📝 Deployment Checklist
 
 **Before Deploying:**
+
 1. ✅ Push latest code to GitHub
 2. ✅ Build succeeds locally (`yarn build`)
 3. ✅ `.env` file in `.gitignore`
 4. ✅ No sensitive data committed to git
 
 **Railway Setup:**
+
 1. ✅ Create new Railway project
 2. ✅ Link to GitHub repository
 3. ✅ Add all environment variables (without quotes)
@@ -99,6 +109,7 @@ FRONTEND_URL=<frontend-deployment-url>
 5. ✅ Confirm "apply destructive changes"
 
 **Post-Deployment:**
+
 1. ✅ Generate public domain in Settings → Networking
 2. ✅ Set port to 8080
 3. ✅ Test API endpoints
@@ -177,6 +188,7 @@ FRONTEND_URL=<frontend-deployment-url>
 ### 🎯 Backend Status: **COMPLETE**
 
 All backend functionality is implemented and tested:
+
 - ✅ Google OAuth authentication with session management
 - ✅ User registration and login flow
 - ✅ Investment CRUD operations with user isolation
@@ -190,6 +202,7 @@ All backend functionality is implemented and tested:
 ### 📋 Next Steps: Frontend Implementation
 
 #### Frontend (Next Session):
+
 1. Add `paths.goals` to `src/utils/constants.ts`
 2. Create goal API hooks in `src/hooks/api-hooks.ts`:
    - `useGoals()` - Fetch all goals
@@ -213,6 +226,7 @@ All backend functionality is implemented and tested:
 ### 📝 Development Tools
 
 **Code Quality:**
+
 - `yarn lint` - Check for ESLint errors
 - `yarn lint:fix` - Auto-fix ESLint issues
 - `yarn format` - Format code with Prettier
@@ -220,6 +234,7 @@ All backend functionality is implemented and tested:
 - `yarn build` - Compile TypeScript to JavaScript
 
 **Development:**
+
 - `yarn start` - Start dev server with nodemon (auto-reload)
 - `yarn dev` - Start server with ts-node (no auto-reload)
 
@@ -249,15 +264,18 @@ src/
 ### 🗄️ API Endpoints
 
 **Authentication:**
+
 - `GET /api/auth/google` - Initiate Google OAuth flow
 - `GET /api/auth/google/callback` - OAuth callback handler
 
 **Investments:** (All require authentication)
+
 - `GET /api/investments` - Get all user investments
 - `POST /api/investments` - Create new investment
 - `DELETE /api/investments/:id` - Delete investment
 
 **Goals:** (All require authentication)
+
 - `GET /api/goals` - Get all user goals (supports `?status=active|completed|cancelled`)
 - `POST /api/goals` - Create new goal (max 1 active goal per user)
 - `PATCH /api/goals/:id` - Update goal status (body: `{ status: 'completed' | 'cancelled' }`)
@@ -301,6 +319,7 @@ CREATE TABLE goals (
 ### 📝 Application Workflow
 
 The app implements a "financial ladder" approach:
+
 1. User creates a goal (e.g., save $50k)
 2. User makes monthly investments (CDs/T-Bills with 3-month terms)
 3. Frontend calculates progress: `SUM(investments) / target_amount * 100`
@@ -354,6 +373,7 @@ The app implements a "financial ladder" approach:
 ### 📋 Next Steps (Todo List)
 
 #### Backend (Current Session):
+
 1. **Create goal routes** - `src/routes/goalRoutes.ts`
    - `GET /api/goals` → `getAllGoals` (with optional ?status= query param)
    - `POST /api/goals` → `createGoal`
@@ -367,6 +387,7 @@ The app implements a "financial ladder" approach:
 3. **Apply requireAuth middleware to goal routes**
 
 #### Frontend (Future Session):
+
 1. Add `paths.goals` to `src/utils/constants.ts`
 2. Create goal API hooks in `src/hooks/api-hooks.ts`:
    - `useGoals()` - Fetch all goals
@@ -425,6 +446,7 @@ CREATE TABLE goals (
 ### 📝 Application Workflow
 
 The app implements a "financial ladder" approach:
+
 1. User creates a goal (e.g., save $50k)
 2. User makes monthly investments (CDs/T-Bills with 3-month terms)
 3. Frontend calculates progress: `SUM(investments) / target_amount * 100`
@@ -503,7 +525,7 @@ The app implements a "financial ladder" approach:
 
 2. **Complete goalController.ts**
    - Implement `updateGoalStatus` function (mark as completed/cancelled)
-   - Implement `getGoalProgress` function (calculate: sum of investments / target_amount * 100)
+   - Implement `getGoalProgress` function (calculate: sum of investments / target_amount \* 100)
 
 3. **Wire up goal routes in server.ts**
    - Import and use goal routes: `app.use('/api/goals', goalRoutes)`
